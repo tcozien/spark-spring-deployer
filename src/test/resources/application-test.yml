@@ -1,0 +1,26 @@
+app:
+  version: @project.version@
+  minPort: 29111
+  maxPort: 29111
+  perimeter: spark
+  server: 29111
+
+spring:
+  application:
+    name: spark-launcher
+  thymeleaf:
+    mode: HTML5
+    encoding: UTF-8
+    content-type: text/html
+    cache: false
+
+spark-launcher:
+  masterDefault: spark://
+  executorCoresDefault: 5
+  executorMemoryDefault: 8g
+  sparkHomeDefault: /opt/mapr/spark/spark-1.5.2/
+  logsHome: /home/CDWEB/tcozien/spark/spark-launcher/
+  appJarDir: /home/CDWEB/tcozien/spark/jars/
+  ansibleFilePath: /home/CDWEB/tcozien/services-config/ansible/fetch_app.yml
+  ansibleHostsPath: /home/CDWEB/tcozien/services-config/ansible/fetch_app_hosts
+  resourceManager: http://a01hmaprbvip.cdweb.biz:8088/cluster

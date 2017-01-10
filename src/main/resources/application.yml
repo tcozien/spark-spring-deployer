@@ -1,0 +1,23 @@
+###############
+# CONFIG FILE #
+###############
+
+server: 8080
+
+spring:
+  application:
+    name: spark-spring-deployer
+  thymeleaf:
+    mode: HTML5
+    encoding: UTF-8
+    content-type: text/html
+    cache: false
+
+spark-launcher:
+  masterDefault: spark://
+  executorCoresDefault: 5
+  executorMemoryDefault: 8g
+  sparkHomeDefault: /opt/mapr/spark/spark-1.6.1/
+  logsHome: /var/logs/
+  appJarDir: /var/jars/
+  resourceManager: http://google.fr

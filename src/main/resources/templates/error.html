@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head lang="en">
+	<title>Spark Launcher Error</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>It works !</h1>
+    <h2>Spark Launcher : <span th:text="'Error ' +${status}">Error</span></h2>
+    Agent is currently running and you have accessed an existing page...or not, but an <b>error</b> occurred.<br /><br />
+    <div th:text="'Status : ' +${status}"></div>
+    <div th:text="'Message : ' +${message}"></div>
+    <div th:text="'Error : ' +${error}"></div>
+    <div th:text="'Timestamp : ' +${timestamp}"></div>
+    <div th:text="'Trace : ' +${trace}"></div>
+</body>
+</html>

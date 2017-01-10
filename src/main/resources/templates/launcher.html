@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Spark Spring Deployer</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+    <link href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.4/css/bootstrap.min.css}"
+          rel="stylesheet" media="screen"/>
+    <link rel="stylesheet" th:href="@{/css/launcher.css}"/>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"
+            th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("form").submit(function() {
+               // Prevent double click
+               $(":submit", this).attr("disabled", "disabled");
+               // Remove log informations
+               $("#result").empty();
+            });
+        })
+
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="starter-template">
+        <div class="row">
+            <div class="col-xs-8">
+                <h1>Spark Spring Deployer</h1>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <form action="#" th:action="@{/spark/deployer}" th:object="${uploadedSparkApp}" method="post" enctype="multipart/form-data">
+        <div class="form-group row">
+            <div class="col-xs-2 required">
+                <label for="team">Team:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{team}" id="team" class="form-control" placeholder="Team | big_data"/>
+                <span th:if="${#fields.hasErrors('team')}" th:errors="*{team}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <label for="mainClass">Main class:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{mainClass}" id="mainClass" class="form-control" placeholder="package.main.class | com.cdiscount.bigdata.spark.Dummy"/>
+                <span th:if="${#fields.hasErrors('mainClass')}" th:errors="*{mainClass}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2 required">
+                <label for="file">File:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="file" th:field="*{file}" id="file" class="form-control"
+                       placeholder="Jar file"/>
+                <span th:if="${#fields.hasErrors('file')}" th:errors="*{file}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <label for="jobArguments">Job Arguments:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{jobArguments}" id="jobArguments" class="form-control"
+                       placeholder="job arguments separated by space"/>
+                <span th:if="${#fields.hasErrors('jobArguments')}" th:errors="*{jobArguments}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <label for="sparkArguments">Spark Arguments:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{sparkArguments}" id="sparkArguments" class="form-control"
+                       placeholder="application arguments separated by semi-colon | --- packages x.y.z"/>
+                <span th:if="${#fields.hasErrors('sparkArguments')}" th:errors="*{sparkArguments}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2 required">
+                <label for="deployMode">Deploy mode:</label>
+            </div>
+            <div class="col-xs-8">
+                <select class="form-control" th:field="*{deployMode}" id="deployMode">
+                    <option selected="selected" value="client">Client</option>
+                    <option value="cluster">Cluster</option>
+                </select>
+                <span th:if="${#fields.hasErrors('deployMode')}" th:errors="*{deployMode}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <label for="supervise">Supervise:</label>
+            </div>
+            <div class="col-xs-8">
+                <div id="supervise">
+                    <label>
+                        <input type="checkbox" th:field="*{supervise}" th:readonly="true"/>
+                    </label>
+                </div>
+                <span th:if="${#fields.hasErrors('supervise')}" th:errors="*{supervise}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2 required">
+                <label for="master">Master:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{master}" id="master" class="form-control" th:readonly="true"/>
+                <span th:if="${#fields.hasErrors('master')}" th:errors="*{master}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2 required">
+            </div>
+            <div class="col-xs-8">
+                <p>
+                    Below are some specific job configuration : may be overridden by application configuration
+                </p>
+                <p style="color:red;">
+                    Be aware that we are monitoring the jobs!
+                </p>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <label for="executorMemory">Executor memory:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{executorMemory}" id="executorMemory" class="form-control"
+                       placeholder="memory for each executor" th:readonly="true"/>
+                <span th:if="${#fields.hasErrors('executorMemory')}" th:errors="*{executorMemory}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <label for="executorCores">Executor cores:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{executorCores}" id="executorCores" class="form-control"
+                       placeholder="maximum tasks by executor (should be less than 5)" th:readonly="true"/>
+                <span th:if="${#fields.hasErrors('executorCores')}" th:errors="*{executorCores}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <label for="numExecutors">Number of executors:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{numExecutors}" id="numExecutors" class="form-control"
+                       placeholder="number of executors" th:readonly="true"/>
+                <span th:if="${#fields.hasErrors('numExecutors')}" th:errors="*{numExecutors}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2 required">
+                <label for="sparkHome">Spark home:</label>
+            </div>
+            <div class="col-xs-8">
+                <input type="text" th:field="*{sparkHome}" id="sparkHome" class="form-control" th:readonly="true"/>
+                <span th:if="${#fields.hasErrors('sparkHome')}" th:errors="*{sparkHome}">Error message</span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-xs-2">
+                <button type="submit" class="btn btn-primary">Submit app on cluster</button>
+            </div>
+            <div class="col-xs-8">
+                <p>
+                    Submitting app wil result on posting jar file and then launching spark application
+                </p>
+            </div>
+        </div>
+    </form>
+
+    <!-- Id and log ref -->
+    <br/>
+    <div id="result" th:if="${uploadedSparkApp.id != ''}">
+        <form th:object="${uploadedSparkApp}">
+            <br/>
+            <div th:if="${fileStored == true}">
+                <div class="alert alert-success">
+                    <strong>Success!</strong> The file has been stored
+                </div>
+            </div>
+            <div th:if="${fileStored == false}">
+                <div class="alert alert-danger">
+                    <strong>Error!</strong> while storing file
+                </div>
+            </div>
+
+            <div th:if="${appSubmitted == true}">
+                <div class="alert alert-success">
+                    <strong>Success!</strong> The application have been submitted
+                </div>
+            </div>
+            <div th:if="${appSubmitted == false}">
+                <div class="alert alert-danger">
+                    <strong>Error!</strong> while submitting application
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-2">
+                    <label for="log_input">Log input:</label>
+                </div>
+                <div class="col-xs-8">
+                    <div th:if="${uploadedSparkApp.deployMode == 'client'}">
+                        <a id="log_input" th:href="@{/spark/logs?file={logPath}(logPath=${uploadedSparkApp.inputLogPath})}" target="_blank" class="btn btn-info" role="button">Show Input log</a>
+                    </div>
+                    <div th:if="${uploadedSparkApp.deployMode == 'cluster'}">
+                        <a th:href="${resourceManager}" target="_blank" class="btn btn-info" role="button">Show Resource Manager</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div><!-- /.container -->
+</body>
+</html>
