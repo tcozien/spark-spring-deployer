@@ -1,6 +1,6 @@
 package fr.ippon.spark.deployer.service;
 
-import fr.ippon.spark.deployer.settings.SparkLauncherSettings;
+import fr.ippon.spark.deployer.settings.SparkDeployerSettings;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +24,13 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Flush old log files.
  */
 @Service
-@EnableConfigurationProperties(SparkLauncherSettings.class)
+@EnableConfigurationProperties(SparkDeployerSettings.class)
 public class FlushService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FlushService.class);
 
     @Autowired
-    private SparkLauncherSettings sparkLauncherSettings;
+    private SparkDeployerSettings sparkDeployerSettings;
 
     /**
      * Remove old of 7 days files.
@@ -42,7 +42,7 @@ public class FlushService {
         final Date currentDate = new Date(System.currentTimeMillis());
         Duration duration = Duration.ofDays(1);
 
-        String logsPath = sparkLauncherSettings.getSparkProperties().getLogsHome();
+        String logsPath = sparkDeployerSettings.getSparkProperties().getLogsHome();
         final File logDirectory = new File(logsPath);
         final AtomicInteger deletedLogsCounter = new AtomicInteger(0);
         if (logDirectory.isDirectory()) {
@@ -63,7 +63,7 @@ public class FlushService {
         }
 
         LOGGER.info("Remove old resources files");
-        String resourcePath = sparkLauncherSettings.getSparkProperties().getAppJarDir();
+        String resourcePath = sparkDeployerSettings.getSparkProperties().getAppJarDir();
         final File resourceDirectory = new File(resourcePath);
         final AtomicInteger deletedResourceCounter = new AtomicInteger(0);
         if (resourceDirectory.isDirectory()) {

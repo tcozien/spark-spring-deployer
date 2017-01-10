@@ -2,9 +2,8 @@ package fr.ippon.spark.deployer.web.controller;
 
 import fr.ippon.spark.deployer.model.UploadedSparkApp;
 import fr.ippon.spark.deployer.service.SparkService;
-import fr.ippon.spark.deployer.settings.SparkLauncherSettings;
+import fr.ippon.spark.deployer.settings.SparkDeployerSettings;
 import fr.ippon.spark.deployer.web.controller.validator.FileValidator;
-import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,11 @@ import java.io.IOException;
 
 
 @Controller
-@EnableConfigurationProperties(SparkLauncherSettings.class)
-public class SparkScalaDevLauncherController {
+@EnableConfigurationProperties(SparkDeployerSettings.class)
+public class SparkDeployerController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SparkScalaDevLauncherController.class);
-    private static final String LAUNCHER_SCALA_TEMPLATE = "launcherScalaDev";
+    private static final Logger LOGGER = LoggerFactory.getLogger(SparkDeployerController.class);
+    private static final String DEPLOYER_TEMPLATE = "launcher";
 
     @Autowired
     private FileValidator fileValidator;
@@ -36,17 +35,17 @@ public class SparkScalaDevLauncherController {
     private SparkService sparkService;
 
     @Autowired
-    private SparkLauncherSettings sparkLauncherSettings;
+    private SparkDeployerSettings sparkDeployerSettings;
 
-    @RequestMapping(value = "/spark/deployer", method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/spark/deployer"}, method = RequestMethod.GET)
     public String sparkLauncher(UploadedSparkApp uploadedSparkApp) {
         // Set default properties
-        uploadedSparkApp.setMaster(sparkLauncherSettings.getSparkProperties().getMasterDefault());
-        uploadedSparkApp.setExecutorCores(sparkLauncherSettings.getSparkProperties().getExecutorCoresDefault());
-        uploadedSparkApp.setExecutorMemory(sparkLauncherSettings.getSparkProperties().getExecutorMemoryDefault());
-        uploadedSparkApp.setNumExecutors(sparkLauncherSettings.getSparkProperties().getNumExecutorsDefault());
-        uploadedSparkApp.setSparkHome(sparkLauncherSettings.getSparkProperties().getSparkHomeDefault());
-        return LAUNCHER_SCALA_TEMPLATE;
+        uploadedSparkApp.setMaster(sparkDeployerSettings.getSparkProperties().getMasterDefault());
+        uploadedSparkApp.setExecutorCores(sparkDeployerSettings.getSparkProperties().getExecutorCoresDefault());
+        uploadedSparkApp.setExecutorMemory(sparkDeployerSettings.getSparkProperties().getExecutorMemoryDefault());
+        uploadedSparkApp.setNumExecutors(sparkDeployerSettings.getSparkProperties().getNumExecutorsDefault());
+        uploadedSparkApp.setSparkHome(sparkDeployerSettings.getSparkProperties().getSparkHomeDefault());
+        return DEPLOYER_TEMPLATE;
     }
 
     @PostMapping("/spark/deployer")
@@ -54,7 +53,7 @@ public class SparkScalaDevLauncherController {
         fileValidator.validate(uploadedSparkApp, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            return LAUNCHER_SCALA_TEMPLATE;
+            return DEPLOYER_TEMPLATE;
         }
 
         // Generate Id (used for logging)
@@ -71,7 +70,7 @@ public class SparkScalaDevLauncherController {
         model.addAttribute("fileStored", fileStored);
         model.addAttribute("appSubmitted", appSubmitted);
         model.addAttribute("uploadedSparkApp", uploadedSparkApp);
-        model.addAttribute("resourceManager", sparkLauncherSettings.getSparkProperties().getResourceManager());
-        return LAUNCHER_SCALA_TEMPLATE;
+        model.addAttribute("resourceManager", sparkDeployerSettings.getSparkProperties().getResourceManager());
+        return DEPLOYER_TEMPLATE;
     }
 }

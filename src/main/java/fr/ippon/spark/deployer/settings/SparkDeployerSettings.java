@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @ConfigurationProperties
 @EnableConfigurationProperties(SparkProperties.class)
-public class SparkLauncherSettings {
+public class SparkDeployerSettings {
 
     @Autowired
     private SparkProperties sparkProperties;

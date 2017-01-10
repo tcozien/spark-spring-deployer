@@ -1,6 +1,5 @@
 package fr.ippon.spark.deployer.web.controller;
 
-import io.swagger.annotations.Api;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 @Controller
-@Api(tags = "Log")
 public class LogController {
 
     @RequestMapping(value = "/spark/logs", method = RequestMethod.GET, produces = MediaType.TEXT_PLAIN_VALUE)
