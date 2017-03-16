@@ -140,6 +140,12 @@
         </dependency>
 	</dependencies>
 
+    <scm>
+        <connection>scm:git:git@github.com:tcozien/spark-spring-deployer.git</connection>
+        <url>scm:git:git@github.com:tcozien/spark-spring-deployer.git</url>
+        <developerConnection>scm:git:git@github.com:tcozien/spark-spring-deployer.git</developerConnection>
+    </scm>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -153,6 +159,26 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+                <version>1.0-m5.1</version>
+                <configuration>
+                    <flowInitContext>
+                        <masterBranchName>master</masterBranchName>
+                        <developBranchName>development</developBranchName>
+                        <featureBranchPrefix>feature-</featureBranchPrefix>
+                        <releaseBranchPrefix>release-</releaseBranchPrefix>
+                        <hotfixBranchPrefix>hotfix-</hotfixBranchPrefix>
+                        <versionTagPrefix>version-</versionTagPrefix>
+                    </flowInitContext>
+                    <username>USERNAME_FOR_A_GIT_USER</username>
+                    <password>PASSWORD_FOR_A_GIT_USER</password>
+                    <noDeploy>false</noDeploy>
+                    <squash>true</squash>
+                    <scmCommentPrefix>[RELEASE] </scmCommentPrefix>
+                </configuration>
+            </plugin>
 		</plugins>
 	</build>
 </project>
