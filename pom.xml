@@ -4,7 +4,7 @@
 
 	<groupId>fr.ippon.spark</groupId>
 	<artifactId>spark-spring-deployer</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.1.0</version>
 	<packaging>jar</packaging>
 
 	<name>${project.artifactId}</name>
